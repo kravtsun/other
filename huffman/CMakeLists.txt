@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.5)
 project(huffman)
 
 set(CMAKE_CXX_STANDARD 11)
@@ -20,4 +20,3 @@ add_executable(encode
 add_executable(decode
     ${COMMON_SOURCES}
     decode.cpp)
-
