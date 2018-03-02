@@ -1,4 +1,4 @@
-#include <bits/stdc++.h>
+#include <iostream>
 
 #include "common.h"
 #include "huffman.h"
@@ -11,6 +11,8 @@ int main(int argc, char **argv) {
     }
     const std::string input_filename = argv[1];
     const std::string output_filename = argv[2];
+    
+    using namespace huffman;
     
     ifstream_t fin;
     fin.open(input_filename, std::ios_base::binary);

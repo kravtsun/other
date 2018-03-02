@@ -3,12 +3,13 @@
 
 #include <stdexcept>
 
+namespace huffman {
+
 class HuffmanException : public std::runtime_error {
 public:
-    HuffmanException(const std::string &msg)
-            : std::runtime_error(msg)
-    {}
+    explicit HuffmanException(const std::string &msg);
 };
 
+}
 
 #endif //HUFFMAN_HUFFMAN_EXCEPTION_H

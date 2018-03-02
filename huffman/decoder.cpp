@@ -1,23 +1,25 @@
+#include <cassert>
 #include "decoder.h"
+#include "huffman_exception.h"
+
+namespace huffman {
 
 Decoder::Decoder(istream_t &is)
-        : is_(is)
-{}
+        : is_(is) {}
 
 char_t Decoder::read_character() {
     char_t c;
-//    is_.get(c);
-    is_.read(&c, 1);
+    is_.get(c);
     return c;
 }
 
-int64_t Decoder::read_int() {
-    static_assert(int_size % CHAR_BYTES_COUNT == 0, "sizeof(int) % sizeof(char_t) != 0");
-    const int int_byte_count = int_size / CHAR_BYTES_COUNT;
-    int64_t num = 0;
+int_t Decoder::read_int() {
+    static_assert(INT_BYTES_COUNT % CHAR_BYTES_COUNT == 0, "sizeof(int) % sizeof(char_t) != 0");
+    const int int_byte_count = INT_BYTES_COUNT / CHAR_BYTES_COUNT;
+    int_t num = 0;
     for (int i = 0; i < int_byte_count; ++i) {
         auto const c = static_cast<uchar_t>(read_character());
-        num |= static_cast<int64_t>(c) << (i * CHAR_BITS_COUNT);
+        num |= static_cast<int_t>(c) << (i * CHAR_BITS_COUNT);
     }
     return num;
 }
@@ -44,20 +46,20 @@ std::vector<bool> Decoder::read_codes(size_t size) {
 }
 
 void Decoder::read_header() {
-    const int64_t encoding_table_size = read_int();
-    for (int i = 0; i < encoding_table_size; ++i) {
+    const int_t encoding_table_size = read_int();
+    for (int_t i = 0; i < encoding_table_size; ++i) {
         char_t c = read_character();
         const auto codes_size = static_cast<const size_t>(read_int());
         auto codes = read_codes(codes_size);
-        encoding_table[c] = codes;
+        encoding_table_[c] = codes;
     }
 }
 
 string_t Decoder::read_all() {
-    if (encoding_table.empty()) {
+    if (encoding_table_.empty()) {
         throw HuffmanException("Header has not been read.");
     }
-
+    
     string_t output;
     
     auto bits_count = read_int();
@@ -66,13 +68,13 @@ string_t Decoder::read_all() {
     
     while (bits_count > 0) {
         auto const c = read_character();
-        for (int current_index = CHAR_BITS_COUNT - 1; current_index >= 0 && bits_count > 0; --current_index, --bits_count) {
+        for (int current_index = CHAR_BITS_COUNT - 1;
+             current_index >= 0 && bits_count > 0; --current_index, --bits_count) {
             codes.push_back(static_cast<bool>(c & (1 << current_index)));
             auto it = find_symbol_with_codes(codes);
-            if (it != encoding_table.end()) {
+            if (it != encoding_table_.end()) {
                 codes.clear();
                 output.push_back(it->first);
-                // TODO convert \n to \r if __WIN32
             }
         }
     }
@@ -83,10 +85,12 @@ string_t Decoder::read_all() {
 }
 
 encoding_table_t::const_iterator Decoder::find_symbol_with_codes(const std::vector<bool> &codes) const {
-    for (auto it = encoding_table.begin(); it != encoding_table.end(); ++it) {
+    for (auto it = encoding_table_.begin(); it != encoding_table_.end(); ++it) {
         if (it->second == codes) {
             return it;
         }
     }
-    return encoding_table.end();
+    return encoding_table_.end();
 }
+
+} // namespace huffman.

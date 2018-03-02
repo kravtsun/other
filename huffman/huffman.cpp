@@ -2,8 +2,11 @@
 #include "huffman.h"
 #include "encoder.h"
 #include "decoder.h"
+#include "huffman_exception.h"
 
-void huffman::encode(istream_t &is, ostream_t &os) {
+namespace huffman {
+
+void encode(istream_t &is, ostream_t &os) {
     char_count_map_t char_count;
     
     std::vector<string_t> lines;
@@ -14,7 +17,7 @@ void huffman::encode(istream_t &is, ostream_t &os) {
         if (!is.eof()) {
             line += endl;
         }
-        for (auto const & c: line) {
+        for (auto const &c: line) {
             if (char_count[c] == std::numeric_limits<char_count_map_t::mapped_type>::max()) {
                 throw HuffmanException("Integer overflow");
             }
@@ -28,7 +31,7 @@ void huffman::encode(istream_t &is, ostream_t &os) {
     encoder.write_all(lines);
 }
 
-void huffman::decode(istream_t &is, ostream_t &os) {
+void decode(istream_t &is, ostream_t &os) {
     Decoder decoder{is};
     
     decoder.read_header();
@@ -36,3 +39,5 @@ void huffman::decode(istream_t &is, ostream_t &os) {
     auto output = decoder.read_all();
     os << output << std::flush;
 }
+
+} // namespace huffman.

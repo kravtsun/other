@@ -8,23 +8,22 @@
 #include <map>
 #include <vector>
 
+namespace huffman {
 
-// TODO put into namespace.
-//using char_t = wchar_t;
 using char_t = char;
 using uchar_t = unsigned char;
+using int_t = int64_t;
 
-//const size_t CHAR_SIZE = static_cast<size_t>(std::numeric_limits<char_t>::max());
 using string_t = std::basic_string<char_t>;
 using istream_t = std::basic_istream<char_t>;
 using ostream_t = std::basic_ostream<char_t>;
 using ifstream_t = std::basic_ifstream<char_t>;
 using ofstream_t = std::basic_ofstream<char_t>;
 
-//constexpr size_t CHAR_BYTES_COUNT = sizeof(wchar_t);
 constexpr size_t CHAR_BYTES_COUNT = 1;
 constexpr size_t CHAR_BITS_COUNT = CHAR_BYTES_COUNT * 8;
-constexpr size_t int_size = sizeof(int64_t);
+constexpr size_t INT_BYTES_COUNT = sizeof(int_t);
+static_assert(INT_BYTES_COUNT % CHAR_BYTES_COUNT == 0, "sizeof(int) % sizeof(char_t) != 0");
 
 using chars_count_t = std::pair<size_t, string_t>;
 using char_count_map_t = std::map<char_t, size_t>;
@@ -37,5 +36,7 @@ const string_t endl = "\n";
 #elif __WIN32
 const string_t endl{'\n\r'};
 #endif
+
+} // namespace huffman.
 
 #endif //HUFFMAN_COMMON_H
