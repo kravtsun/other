@@ -5,18 +5,18 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-Wconversion -Wpedantic")
 
 set(COMMON_SOURCES
-    common.h
-    huffman.cpp huffman.h
-    huffman_exception.cpp huffman_exception.h
-    encoder.cpp encoder.h
-    decoder.cpp decoder.h
+        src/common.h
+        src/huffman.cpp src/huffman.h
+        src/huffman_exception.cpp src/huffman_exception.h
+        src/encoder.cpp src/encoder.h
+        src/decoder.cpp src/decoder.h
 )
 
 add_executable(encode
     ${COMMON_SOURCES}
-    encode.cpp
+        src/encode.cpp
 )
 
 add_executable(decode
     ${COMMON_SOURCES}
-    decode.cpp)
+        src/decode.cpp)

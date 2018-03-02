@@ -6,7 +6,7 @@
 
 int main(int argc, char **argv) {
     if (argc < 3) {
-        std::cout << "USAGE: " << argv[0] << " <input-file> <output-file>";
+        std::cout << "USAGE: " << argv[0] << " <input-file> <output-file>\n";
         return 0;
     }
     const std::string input_filename = argv[1];
